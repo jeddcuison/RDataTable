@@ -1,0 +1,14 @@
+body {
+    font-family: sans-serif;
+    font-size: 9pt;
+}
+
+div.header-container {
+    width: 100%;
+    text-align: center;
+}
+
+div.table-container {
+    width:auto;
+    margin:0 10px
+}
