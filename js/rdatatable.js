@@ -1,7 +1,7 @@
 /**
  * A React Data Table Component.
  *
- * Version: 0.0.1
+ * Version: 1.0.0
  *
  * Features: Consumes JSON data, filter (search), sorting, link edit interface and pagination.
  *
