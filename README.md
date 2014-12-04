@@ -32,7 +32,6 @@ RDataTable uses a number of open source projects to work properly:
 You need Git:
 
 ```sh
-# This section is still being written...
 $ git clone https://github.com/jeddcuison/RDataTable.git
 ```
 
