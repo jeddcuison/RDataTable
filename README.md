@@ -8,6 +8,8 @@ Please note that RDataTable is not an "Official" Data Table component of Faceboo
 
 ![alt tag](http://i107.photobucket.com/albums/m295/jeddcuison/rdatatable-sample-screen-shot_zps2072db80.png)
 
+Working demo: (Under Construction)
+
 ### Version
 1.0.0
 
@@ -31,7 +33,7 @@ You need Git:
 
 ```sh
 # This section is still being written...
-$ git clone [repo] RDataTable
+$ git clone https://github.com/jeddcuison/RDataTable.git
 ```
 
 ### Plugins
