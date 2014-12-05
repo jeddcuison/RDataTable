@@ -8,7 +8,7 @@ Please note that RDataTable is not an "Official" Data Table component of Faceboo
 
 ![alt tag](http://i107.photobucket.com/albums/m295/jeddcuison/rdatatable-sample-screen-shot_zps2072db80.png)
 
-Working demo: (Under Construction)
+[RDataTable Working Demo]
 
 ### Version
 1.0.0
@@ -71,3 +71,4 @@ MIT
 [jQuery UI Themeroller]:http://jqueryui.com/themeroller/
 [Google Maps]:https://www.google.com/maps
 [City of Chicago Data Portal]:https://data.cityofchicago.org/
+[RDataTable Working Demo]:http://www.googledrive.com/host/0B5ltVe1qC9n1ekFiVk9ZTGxWUk0
