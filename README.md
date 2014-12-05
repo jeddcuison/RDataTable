@@ -1,6 +1,6 @@
 # RDatatable
 
-RDataTable (R for "React" or more precisely made using Facebook "React") is a Data Table component built using [Facebook React]. It was inspired by [jQuery DataTables] and infact was suppposed to use it but due to the desire of following React coding principles only its themeroller was ever used. RDataTable in addition incorporates [jQuery UI Themeroller] to enable developers to easily change the look and feel of the Data Table.
+RDataTable (R for "React" or more precisely made using Facebook "React") is a Data Table component built using [Facebook React]. It was inspired by [jQuery DataTables] so much so that RDataTale uses its theme roller in conjunction with [jQuery UI Themeroller] to enable developers to easily change the look and feel of the Data Table.
 
 Please note that RDataTable is not an "Official" Data Table component of Facebook React. This is what you call "Fan" made I guess. ;)
 
