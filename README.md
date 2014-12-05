@@ -50,7 +50,7 @@ Readmes, how to use them in your own application can be found here:
  - On-going...
  - Want to contribute ? (Review of open sourcing procedures still in the backlog)
 
-### Todo's
+### Todos
 
  - Write Tests
  - Include Shim and Sham for IE8 Compatibility
