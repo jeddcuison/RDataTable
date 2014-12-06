@@ -346,8 +346,7 @@ var RDataTableHeader = React.createClass({
 
         var optionsArray = [];
         numberOfRowsToDisplayArray.forEach(function(numberOfRowsToDisplay) {
-            optionsArray.push(new React.DOM.option({value:numberOfRowsToDisplay,
-                    selected:(numberOfRowsToDisplay === self.props.numberOfRowsToDisplay ? "selected" : "")},
+            optionsArray.push(new React.DOM.option({value:numberOfRowsToDisplay},
                 numberOfRowsToDisplay));
         });
 
@@ -356,7 +355,8 @@ var RDataTableHeader = React.createClass({
                 React.DOM.label(null, "Show ",
                     React.DOM.select({ref:"numberOfRowsToDisplayDropDown",
                             size:"1",
-                            onChange:this.handleNumberOfRowsToDisplayChange},
+                            onChange:this.handleNumberOfRowsToDisplayChange,
+                            defaultValue:self.props.numberOfRowsToDisplay},
                         optionsArray),
                     " entries")
 
@@ -422,7 +422,7 @@ var RDataTableFooter = React.createClass({
                     React.DOM.span({className:"ui-icon ui-icon-circle-arrow-w"}, "")),
                 React.DOM.a({className:"fg-button ui-button ui-state-default ui-corner-right " + nextClass, onClick:this.handleNextPageClick},
                     React.DOM.span({className:"ui-icon ui-icon-circle-arrow-e"}, "")),
-                React.DOM.span({style:{"padding-left":"10px"}}, "Page " + this.props.currentPage + "/" + this.props.maxPage)
+                React.DOM.span({style:{paddingLeft:"10px"}}, "Page " + this.props.currentPage + "/" + this.props.maxPage)
             ));
     },
     handlePrevPageClick: function() {
