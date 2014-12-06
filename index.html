@@ -5,10 +5,10 @@
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="css/jquery.dataTables_themeroller.css">
     <link rel="stylesheet" type="text/css" href="css/rdatatable.css">
-    <script src="jquery/jquery-1.11.1.min.js"></script>
-    <script src="react-0.12.1/react.min.js"></script>
-    <script src="data.js"></script>
-    <script src="js/rdatatable.js"></script>
+    <script src="lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="lib/react-0.12.1/react.min.js"></script>
+    <script src="src/data.js"></script>
+    <script src="src/rdatatable.js"></script>
     <script type="text/javascript">
         /** @jsx React.DOM */
         $(document).ready(function() {
@@ -29,7 +29,7 @@
                 loc = loc.substr(1, loc.length - 2);         // strip '(' and ')'
                 var mapLink = "http://maps.google.com/maps?q=" + loc;
                 return React.DOM.a({href:mapLink, target:"_blank"}, "map");
-            }
+            };
 
             var colDef = [{title:"Area Name", key:"areaName"},
                           {title:"Property Type", key:"propertyType"},
@@ -39,7 +39,7 @@
                           {title:"Phone Number", key:"phone"},
                           {title:"Management Company", key:"mgmtCompany"},
                           {title:"Units", key:"units"},
-                          {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false}]
+                          {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false}];
 
             React.renderComponent(RDataTable({colDefinitions:colDef,
                                               data:sampleJson,
@@ -58,6 +58,6 @@
         <h1>Chicago City Affordable Rental Housing Development Data</h1>
         <p><a href="https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi">For the actual data source please click...</a></p>
     </div>
-    <div id="table-container" class="table-container"/>
+    <div id="table-container" class="table-container"></div>
 </body>
 </html>

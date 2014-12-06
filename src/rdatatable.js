@@ -349,7 +349,7 @@ var RDataTableHeader = React.createClass({
             optionsArray.push(new React.DOM.option({value:numberOfRowsToDisplay,
                     selected:(numberOfRowsToDisplay === self.props.numberOfRowsToDisplay ? "selected" : "")},
                 numberOfRowsToDisplay));
-        })
+        });
 
         return React.DOM.div({className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix"},
             React.DOM.div({className:"dataTables_length"},
@@ -392,11 +392,12 @@ var RDataTableHeader = React.createClass({
 var RDataTableFooter = React.createClass({
     render: function() {
         var countDetailStr;
+        var displayedRowCount;
         if (this.props.filterRowCount === this.props.rowCount) {
-            var displayedRowCount = (this.props.numberOfRowsToDisplay < this.props.rowCount) ? this.props.numberOfRowsToDisplay : this.props.rowCount;
+            displayedRowCount = (this.props.numberOfRowsToDisplay < this.props.rowCount) ? this.props.numberOfRowsToDisplay : this.props.rowCount;
             countDetailStr = "Showing 1 to " + displayedRowCount + " of " + this.props.rowCount;
         } else {
-            var displayedRowCount = (this.props.numberOfRowsToDisplay < this.props.filterRowCount) ? this.props.numberOfRowsToDisplay : this.props.filterRowCount;
+            displayedRowCount = (this.props.numberOfRowsToDisplay < this.props.filterRowCount) ? this.props.numberOfRowsToDisplay : this.props.filterRowCount;
             countDetailStr = "Showing 1 to " + displayedRowCount + " of " + this.props.filterRowCount + " (filtered from " + this.props.rowCount + " total entries)";
         }
 
