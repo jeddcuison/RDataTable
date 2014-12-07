@@ -53,8 +53,6 @@ Readmes, how to use them in your own application can be found here:
 ### Todos
 
  - Write Tests
- - Include Shim and Sham for IE8 Compatibility
- - Specify non data columns for static text, buttons, checkboxes etc...
  - Add expand/collapse row(s) feature
  - Review and Refactor
 
