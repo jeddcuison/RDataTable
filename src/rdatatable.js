@@ -246,22 +246,22 @@ var RDataTable = React.createClass({
 
             var rows = this.createTableRows(formattedData.data);
 
-            table = new React.DOM.table({className:"dataTable"},
-                new RDataTableHeaderRow({colDefinitions:this.props.colDefinitions,
+            table = new React.DOM.table({ref:"table", className:"dataTable"},
+                new RDataTableHeaderRow({ref:"tableColHeader", colDefinitions:this.props.colDefinitions,
                     setSortKeyCallback:this.setSortKeyCallback,
                     sortKey:this.state.sortKey,
                     sortOrderMap:this.state.sortOrderMap}),
                 React.DOM.tbody(null, rows));
         } else {
-            table = new React.DOM.div({className:"noDataFoundMsg"}, "The table is empty!");
+            table = new React.DOM.div({ref:"table", className:"noDataFoundMsg"}, "The table is empty!");
         }
 
         return React.DOM.div({className:"dataTables_wrapper"},
-            new RDataTableHeader({filterCallback:this.filterCallback,
+            new RDataTableHeader({ref:"tableHeader", filterCallback:this.filterCallback,
                 numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
                 selectNumberOfRowsToDisplayCallback:this.selectNumberOfRowsToDisplayCallback}),
             table,
-            new RDataTableFooter({numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
+            new RDataTableFooter({ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
                 rowCount:data.length,
                 filterRowCount: formattedData.filterRowCount,
                 prevPageCallback:this.prevPageCallback,
@@ -297,8 +297,8 @@ var RDataTable = React.createClass({
         }
         this.setState({sortKey:key, sortOrderMap:sortOrderMap});
     },
-    filterCallback: function(filterTextBoxRef) {
-        this.setState({filterVal:$(filterTextBoxRef.getDOMNode()).val(), page:1});
+    filterCallback: function(val) {
+        this.setState({filterVal:val, page:1});
     },
     selectNumberOfRowsToDisplayCallback: function(numberOfRowsToDisplayDropDownRef) {
         this.setState({numberOfRowsToDisplay:$(numberOfRowsToDisplayDropDownRef.getDOMNode()).val(), page:1});
@@ -364,12 +364,12 @@ var RDataTableHeader = React.createClass({
             React.DOM.div({className:"dataTables_filter"},
                 React.DOM.label(null, "Search: ",
                     React.DOM.input({ref:"filterTextBox",
-                        onKeyUp:this.handleKeyUp}))
+                        onChange:this.handleChange}))
             )
         );
     },
-    handleKeyUp: function() {
-        this.props.filterCallback(this.refs.filterTextBox);
+    handleChange: function(e) {
+        this.props.filterCallback(e.target.value);
     },
     handleNumberOfRowsToDisplayChange: function() {
         this.props.selectNumberOfRowsToDisplayCallback(this.refs.numberOfRowsToDisplayDropDown);
@@ -418,9 +418,9 @@ var RDataTableFooter = React.createClass({
         return React.DOM.div({className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix"},
             React.DOM.div({className:"dataTables_info"}, countDetailStr),
             React.DOM.div({className:"dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi ui-buttonset-multi paging_toc"},
-                React.DOM.a({className:"fg-button ui-button ui-state-default ui-corner-left " + prevClass, onClick:this.handlePrevPageClick},
+                React.DOM.a({ref:"prevPage", className:"fg-button ui-button ui-state-default ui-corner-left " + prevClass, onClick:this.handlePrevPageClick},
                     React.DOM.span({className:"ui-icon ui-icon-circle-arrow-w"}, "")),
-                React.DOM.a({className:"fg-button ui-button ui-state-default ui-corner-right " + nextClass, onClick:this.handleNextPageClick},
+                React.DOM.a({ref:"nextPage", className:"fg-button ui-button ui-state-default ui-corner-right " + nextClass, onClick:this.handleNextPageClick},
                     React.DOM.span({className:"ui-icon ui-icon-circle-arrow-e"}, "")),
                 React.DOM.span({style:{paddingLeft:"10px"}}, "Page " + this.props.currentPage + "/" + this.props.maxPage)
             ));
@@ -459,7 +459,8 @@ var RDataTableHeaderRow = React.createClass({
                     }
                 }
 
-                headerCols.push(new RDataTableHeaderColumn({colKey:col.key,
+                headerCols.push(new RDataTableHeaderColumn({ref:col.key,
+                                                            colKey:col.key,
                                                             title:col.title,
                                                             sortable:col.sortable,
                                                             setSortKeyCallback:self.props.setSortKeyCallback,
@@ -488,7 +489,7 @@ var RDataTableHeaderColumn = React.createClass({
             return React.DOM.th({className:"ui-state-default"},
                                 React.DOM.span({className:"col-header-title"}, this.props.title));
         }
-        return React.DOM.th({className:"sorting ui-state-default", onClick:this.sort},
+        return React.DOM.th({ref:"colHead", className:"sorting ui-state-default", onClick:this.sort},
                             React.DOM.div({className:""},
                                           React.DOM.span({className:"col-header-title"}, this.props.title),
                                           React.DOM.span({className:"DataTables_sort_icon css_right ui-icon ui-icon-carat-2-n-s col-header-sort-icon " + this.props.sortIconClass})));
@@ -517,6 +518,7 @@ var RDataTableRow = React.createClass({
                 cols.push(new RDataTableColumn({data:RDataTable.getEndData(self.props.rowItem, col.key)}));
             }
         });
+
         var style = this.props.rowItem.isVisible ? {} : {display:"none"};
         var rowSelectedClass = "";
         if (this.props.rowItem.isVisible) {
