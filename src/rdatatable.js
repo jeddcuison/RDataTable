@@ -215,11 +215,12 @@ var RDataTable = React.createClass({
             }
 
             var oddEvenClassName = (i % 2 === 0) ? "even" : "odd";
-            rows.push(new RDataTableRow({className:oddEvenClassName,
-                rowItem:item,
-                colDefinitions:self.props.colDefinitions,
-                selectItemCallback:self.selectItemCallback,
-                selectedRowIdx:self.state.selectedRowIdx}));
+
+            rows.push(React.createElement(RDataTableRow, {className:oddEvenClassName,
+                                                          rowItem:item,
+                                                          colDefinitions:self.props.colDefinitions,
+                                                          selectItemCallback:self.selectItemCallback,
+                                                          selectedRowIdx:self.state.selectedRowIdx}));
         });
         return rows;
     },
@@ -246,28 +247,35 @@ var RDataTable = React.createClass({
 
             var rows = this.createTableRows(formattedData.data);
 
-            table = new React.DOM.table({ref:"table", className:"dataTable"},
-                new RDataTableHeaderRow({ref:"tableColHeader", colDefinitions:this.props.colDefinitions,
-                    setSortKeyCallback:this.setSortKeyCallback,
-                    sortKey:this.state.sortKey,
-                    sortOrderMap:this.state.sortOrderMap}),
-                React.DOM.tbody(null, rows));
+            table = React.createElement("table", {ref:"table", className:"dataTable"},
+                                        React.createElement(RDataTableHeaderRow, {ref:"tableColHeader",
+                                                                                  colDefinitions:this.props.colDefinitions,
+                                                                                  setSortKeyCallback:this.setSortKeyCallback,
+                                                                                  sortKey:this.state.sortKey,
+                                                                                  sortOrderMap:this.state.sortOrderMap}),
+                                        React.createElement("tbody", null, rows)
+                                        );
+
+
         } else {
-            table = new React.DOM.div({ref:"table", className:"noDataFoundMsg"}, "The table is empty!");
+            table = React.createElement("div", {ref:"table", className:"noDataFoundMsg"}, "The table is empty!");
         }
 
-        return React.DOM.div({className:"dataTables_wrapper"},
-            new RDataTableHeader({ref:"tableHeader", filterCallback:this.filterCallback,
-                numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
-                selectNumberOfRowsToDisplayCallback:this.selectNumberOfRowsToDisplayCallback}),
-            table,
-            new RDataTableFooter({ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
-                rowCount:data.length,
-                filterRowCount: formattedData.filterRowCount,
-                prevPageCallback:this.prevPageCallback,
-                nextPageCallback:this.nextPageCallback,
-                currentPage:this.state.page,
-                maxPage:maxPage}));
+        return React.createElement("div", {className:"dataTables_wrapper"},
+                                   React.createElement(RDataTableHeader, {ref:"tableHeader",
+                                                                          filterCallback:this.filterCallback,
+                                                                          numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
+                                                                          selectNumberOfRowsToDisplayCallback:this.selectNumberOfRowsToDisplayCallback}),
+                                   table,
+                                   React.createElement(RDataTableFooter, {ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
+                                                                          rowCount:data.length,
+                                                                          filterRowCount: formattedData.filterRowCount,
+                                                                          prevPageCallback:this.prevPageCallback,
+                                                                          nextPageCallback:this.nextPageCallback,
+                                                                          currentPage:this.state.page,
+                                                                          maxPage:maxPage})
+               );
+
     },
     /**
      * Converts a value to it's object equivalent as defined by it's key.
@@ -346,27 +354,25 @@ var RDataTableHeader = React.createClass({
 
         var optionsArray = [];
         numberOfRowsToDisplayArray.forEach(function(numberOfRowsToDisplay) {
-            optionsArray.push(new React.DOM.option({value:numberOfRowsToDisplay},
-                numberOfRowsToDisplay));
+            optionsArray.push(React.createElement("option", {value:numberOfRowsToDisplay}, numberOfRowsToDisplay));
         });
 
-        return React.DOM.div({className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix"},
-            React.DOM.div({className:"dataTables_length"},
-                React.DOM.label(null, "Show ",
-                    React.DOM.select({ref:"numberOfRowsToDisplayDropDown",
-                            size:"1",
-                            onChange:this.handleNumberOfRowsToDisplayChange,
-                            defaultValue:self.props.numberOfRowsToDisplay},
-                        optionsArray),
-                    " entries")
+        return React.createElement("div", {className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix"},
+                                   React.createElement("div", {className:"dataTables_length"},
+                                                       React.createElement("label", null, "Show ",
+                                                                           React.createElement("select", {ref:"numberOfRowsToDisplayDropDown",
+                                                                                                          size:"1",
+                                                                                                          onChange:this.handleNumberOfRowsToDisplayChange,
+                                                                                                          defaultValue:self.props.numberOfRowsToDisplay}, optionsArray), " entries"
+                                                       )
+                                   ),
+                                   React.createElement("div", {className:"dataTables_filter"},
+                                                       React.createElement("label", null, "Search: ",
+                                                                           React.createElement("input", {ref:"filterTextBox", onChange:this.handleChange})
+                                                       )
+                                   )
 
-            ),
-            React.DOM.div({className:"dataTables_filter"},
-                React.DOM.label(null, "Search: ",
-                    React.DOM.input({ref:"filterTextBox",
-                        onChange:this.handleChange}))
-            )
-        );
+                );
     },
     handleChange: function(e) {
         this.props.filterCallback(e.target.value);
@@ -415,15 +421,17 @@ var RDataTableFooter = React.createClass({
             }
         }
 
-        return React.DOM.div({className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix"},
-            React.DOM.div({className:"dataTables_info"}, countDetailStr),
-            React.DOM.div({className:"dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi ui-buttonset-multi paging_toc"},
-                React.DOM.a({ref:"prevPage", className:"fg-button ui-button ui-state-default ui-corner-left " + prevClass, onClick:this.handlePrevPageClick},
-                    React.DOM.span({className:"ui-icon ui-icon-circle-arrow-w"}, "")),
-                React.DOM.a({ref:"nextPage", className:"fg-button ui-button ui-state-default ui-corner-right " + nextClass, onClick:this.handleNextPageClick},
-                    React.DOM.span({className:"ui-icon ui-icon-circle-arrow-e"}, "")),
-                React.DOM.span({style:{paddingLeft:"10px"}}, "Page " + this.props.currentPage + "/" + this.props.maxPage)
-            ));
+        return React.createElement("div",
+                                   {className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix"},
+                                   React.createElement("div", {className:"dataTables_info"}, countDetailStr),
+                                   React.createElement("div", {className:"dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi ui-buttonset-multi paging_toc"},
+                                                       React.createElement("a", {ref:"prevPage", className:"fg-button ui-button ui-state-default ui-corner-left " + prevClass, onClick:this.handlePrevPageClick},
+                                                                           React.createElement("span", {className:"ui-icon ui-icon-circle-arrow-w"}, "")),
+                                                       React.createElement("a", {ref:"nextPage", className:"fg-button ui-button ui-state-default ui-corner-right " + nextClass, onClick:this.handleNextPageClick},
+                                                                            React.createElement("span", {className:"ui-icon ui-icon-circle-arrow-e"}, "")),
+                                                       React.createElement("span", {style:{paddingLeft:"10px"}}, "Page " + this.props.currentPage + "/" + this.props.maxPage)
+                                   ));
+
     },
     handlePrevPageClick: function() {
         this.props.prevPageCallback();
@@ -459,16 +467,16 @@ var RDataTableHeaderRow = React.createClass({
                     }
                 }
 
-                headerCols.push(new RDataTableHeaderColumn({ref:col.key,
-                                                            colKey:col.key,
-                                                            title:col.title,
-                                                            sortable:col.sortable,
-                                                            setSortKeyCallback:self.props.setSortKeyCallback,
-                                                            sortIconClass:sortIconClass}));
+                headerCols.push(React.createElement(RDataTableHeaderColumn, {ref:col.key,
+                                                                             colKey:col.key,
+                                                                             title:col.title,
+                                                                             sortable:col.sortable,
+                                                                             setSortKeyCallback:self.props.setSortKeyCallback,
+                                                                             sortIconClass:sortIconClass}));
             }
         });
 
-        return React.DOM.thead(null, React.DOM.tr({role:"row"}, headerCols));
+        return React.createElement("thead", null, React.createElement("tr", {role:"row"}, headerCols));
     }
 });
 
@@ -477,7 +485,7 @@ var RDataTableHeaderRow = React.createClass({
  *
  * Properties:
  *
- * 1. key - the sort key.
+ * 1. colKey - the column key to sort.
  * 2. title - the title of the column.
  * 3. setSortKeyCallback - the callback called when sorting is set when user clicks on the column.
  * 4. sortIconClass - the class that determines what sort icon is displayed e.g. ascending icon or descending icon.
@@ -486,13 +494,22 @@ var RDataTableHeaderRow = React.createClass({
 var RDataTableHeaderColumn = React.createClass({
     render: function() {
         if (this.props.sortable === false) {
-            return React.DOM.th({className:"ui-state-default"},
-                                React.DOM.span({className:"col-header-title"}, this.props.title));
+            return React.createElement("th",
+                                       {className:"ui-state-default"},
+                                        React.createElement("span",
+                                                            {className:"col-header-title"},
+                                                            this.props.title));
         }
-        return React.DOM.th({ref:"colHead", className:"sorting ui-state-default", onClick:this.sort},
-                            React.DOM.div({className:""},
-                                          React.DOM.span({className:"col-header-title"}, this.props.title),
-                                          React.DOM.span({className:"DataTables_sort_icon css_right ui-icon ui-icon-carat-2-n-s col-header-sort-icon " + this.props.sortIconClass})));
+        return React.createElement("th",
+                                   {ref:"colHead", className:"sorting ui-state-default", onClick:this.sort},
+                                   React.createElement("div",
+                                                       {className:""},
+                                                       React.createElement("span",
+                                                                           {className:"col-header-title"},
+                                                                           this.props.title),
+                                                       React.createElement("span",
+                                                                           {className:"DataTables_sort_icon css_right ui-icon ui-icon-carat-2-n-s col-header-sort-icon " + this.props.sortIconClass})
+                                                      ));
     },
     sort: function() {
         this.props.setSortKeyCallback(this.props.colKey);
@@ -515,7 +532,8 @@ var RDataTableRow = React.createClass({
         var cols = [];
         this.props.colDefinitions.forEach(function(col) {
             if (col.type === undefined && col.isVisible !== false) {
-                cols.push(new RDataTableColumn({data:RDataTable.getEndData(self.props.rowItem, col.key)}));
+                cols.push(React.createElement(RDataTableColumn, {data:RDataTable.getEndData(self.props.rowItem,
+                                                                                            col.key)}));
             }
         });
 
@@ -526,10 +544,12 @@ var RDataTableRow = React.createClass({
                 rowSelectedClass = " row_selected";
             }
         }
-        return React.DOM.tr({className:this.props.className + rowSelectedClass,
-                style:style,
-                onClick:this.handleOnClick},
-            cols);
+
+        return React.createElement("tr",
+                                   {className:this.props.className + rowSelectedClass,
+                                    style:style,
+                                    onClick:this.handleOnClick},
+                                   cols);
     },
     handleOnClick: function() {
         this.props.selectItemCallback(this.props.rowItem);
@@ -545,6 +565,6 @@ var RDataTableRow = React.createClass({
  */
 var RDataTableColumn = React.createClass({
     render: function() {
-        return React.DOM.td(null, this.props.data);
+        return React.createElement("td", null, this.props.data);
     }
 });
