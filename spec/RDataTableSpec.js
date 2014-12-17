@@ -79,10 +79,19 @@ describe("RDataTable test suite", function() {
             return $($(row).find("td")[6]).html();
         };
 
+        // Get rows before sorting and assert
         var rows = $(dtInstance.refs.table.getDOMNode()).find("tbody > tr");
         expect(getColVal(rows[0])).toBe("Metroplex, Inc.");
 
         testUtils.Simulate.click(dtInstance.refs.tableColHeader.refs.mgmtCompany.refs.colHead.getDOMNode());
+
+        /**
+         * Get rows after sorting and assert (should be sorted already).
+         * NOTE: This wasn't the case before keys were defined for each row in an array (as per FB React's advise).
+         *       There was no need to get the rows after sorting.
+         *       Should havae something to do with http://facebook.github.io/react/docs/multiple-components.html#dynamic-children.
+         */
+        rows = $(dtInstance.refs.table.getDOMNode()).find("tbody > tr");
         for (var i = 0; i < rows.length; i++) {
             expect(getColVal(rows[i])).toBe(sortedTestDataCompanyName[i]);
         }

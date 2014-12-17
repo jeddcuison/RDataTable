@@ -216,7 +216,8 @@ var RDataTable = React.createClass({
 
             var oddEvenClassName = (i % 2 === 0) ? "even" : "odd";
 
-            rows.push(React.createElement(RDataTableRow, {className:oddEvenClassName,
+            rows.push(React.createElement(RDataTableRow, {key:item.rowIdx, /* Please see  http://fb.me/react-warning-keys or http://facebook.github.io/react/docs/multiple-components.html#dynamic-children */
+                                                          className:oddEvenClassName,
                                                           rowItem:item,
                                                           colDefinitions:self.props.colDefinitions,
                                                           selectItemCallback:self.selectItemCallback,
@@ -354,7 +355,9 @@ var RDataTableHeader = React.createClass({
 
         var optionsArray = [];
         numberOfRowsToDisplayArray.forEach(function(numberOfRowsToDisplay) {
-            optionsArray.push(React.createElement("option", {value:numberOfRowsToDisplay}, numberOfRowsToDisplay));
+            optionsArray.push(React.createElement("option",
+                                                  {key:numberOfRowsToDisplay, value:numberOfRowsToDisplay},
+                                                   numberOfRowsToDisplay));
         });
 
         return React.createElement("div", {className:"fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix"},
@@ -467,7 +470,8 @@ var RDataTableHeaderRow = React.createClass({
                     }
                 }
 
-                headerCols.push(React.createElement(RDataTableHeaderColumn, {ref:col.key,
+                headerCols.push(React.createElement(RDataTableHeaderColumn, {key:col.key,
+                                                                             ref:col.key,
                                                                              colKey:col.key,
                                                                              title:col.title,
                                                                              sortable:col.sortable,
@@ -532,8 +536,8 @@ var RDataTableRow = React.createClass({
         var cols = [];
         this.props.colDefinitions.forEach(function(col) {
             if (col.type === undefined && col.isVisible !== false) {
-                cols.push(React.createElement(RDataTableColumn, {data:RDataTable.getVal(self.props.rowItem,
-                                                                                            col.key)}));
+                cols.push(React.createElement(RDataTableColumn, {key:col.key + self.props.rowItem.rowIdx,
+                                                                 data:RDataTable.getVal(self.props.rowItem, col.key)}));
             }
         });
 
