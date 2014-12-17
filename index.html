@@ -43,11 +43,11 @@
                           {title:"Units", key:"units"},
                           {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false}];
 
-            React.renderComponent(React.createElement(RDataTable, {colDefinitions:colDef,
-                                                                   data:sampleJson,
-                                                                   // tableIndex:"id", // We need a unique key for the single row highlighting. If not specified, the table will create it's own internal key.
-                                                                   selectItemCallback:selectItemHandler}),
-                                                                   document.getElementById("table-container"));
+            React.render(React.createElement(RDataTable, {colDefinitions:colDef,
+                                                          data:sampleJson,
+                                                          // tableIndex:"id", // We need a unique key for the single row highlighting. If not specified, the table will create it's own internal key.
+                                                          selectItemCallback:selectItemHandler}),
+                                             document.getElementById("table-container"));
 
         });
     </script>
