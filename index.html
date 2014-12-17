@@ -8,7 +8,7 @@
     <script src="lib/jquery/jquery-1.11.1.min.js"></script>
     <script src="lib/es5/es5-shim-4.0.5.min.js"></script>
     <script src="lib/es5/es5-sham-4.0.5.min.js"></script>
-    <script src="lib/react-0.12.1/react.min.js"></script>
+    <script src="lib/react-0.12.1/react.js"></script>
     <script src="src/data.js"></script>
     <script src="src/rdatatable.js"></script>
     <script type="text/javascript">
@@ -43,11 +43,11 @@
                           {title:"Units", key:"units"},
                           {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false}];
 
-            React.renderComponent(RDataTable({colDefinitions:colDef,
-                                              data:sampleJson,
-                                              // tableIndex:"id", // We need a unique key for the single row highlighting. If not specified, the table will create it's own internal key.
-                                              selectItemCallback:selectItemHandler}),
-                                  document.getElementById("table-container"));
+            React.renderComponent(React.createElement(RDataTable, {colDefinitions:colDef,
+                                                                   data:sampleJson,
+                                                                   // tableIndex:"id", // We need a unique key for the single row highlighting. If not specified, the table will create it's own internal key.
+                                                                   selectItemCallback:selectItemHandler}),
+                                                                   document.getElementById("table-container"));
 
         });
     </script>
