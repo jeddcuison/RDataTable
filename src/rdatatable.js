@@ -95,22 +95,22 @@ var RDataTable = React.createClass({
         data.forEach(function(item) {
             var formattedItem = {};
 
-            formattedItem["rowIdx"] = self.props.tableIndex !== undefined ?  RDataTable.getEndData(item, self.props.tableIndex) : ++rowIdx;
+            formattedItem["rowIdx"] = self.props.tableIndex !== undefined ?  RDataTable.getVal(item, self.props.tableIndex) : ++rowIdx;
             var hasMatch = false; // used by filter process
             self.props.colDefinitions.forEach(function(col){
                 var val;
 
                 if (col.renderCallback !== undefined) {
-                    val = col.renderCallback(RDataTable.getEndData(item, col.key), item);
+                    val = col.renderCallback(RDataTable.getVal(item, col.key), item);
                 } else {
-                    val = RDataTable.getEndData(item, col.key);
+                    val = RDataTable.getVal(item, col.key);
                 }
 
                 var tmpVal;
                 if (typeof val !== "object") {
                     tmpVal = val;
                 } else {
-                    tmpVal = RDataTable.getEndData(item, col.key);
+                    tmpVal = RDataTable.getVal(item, col.key);
                     formattedItem["str-" + col.key.split(".")[0]] = tmpVal; // save String value for sorting purposes
                 }
 
@@ -154,10 +154,10 @@ var RDataTable = React.createClass({
         var sortOrderMap = this.state.sortOrderMap;
         if (this.state.sortKey !== null) {
             data.sort(function(item1, item2){
-                var val1 = RDataTable.getEndData(item1, sortKey);
-                val1 = (typeof val1 !== "object") ? val1 : RDataTable.getEndData(item1, "str-" + sortKey);
-                var val2 = RDataTable.getEndData(item2, sortKey);
-                val2 = (typeof val2 !== "object") ? val2 : RDataTable.getEndData(item2, "str-" + sortKey);
+                var val1 = RDataTable.getVal(item1, sortKey);
+                val1 = (typeof val1 !== "object") ? val1 : RDataTable.getVal(item1, "str-" + sortKey);
+                var val2 = RDataTable.getVal(item2, sortKey);
+                val2 = (typeof val2 !== "object") ? val2 : RDataTable.getVal(item2, "str-" + sortKey);
 
                 val1 = $.isNumeric(val1) ? val1 : val1.toLowerCase();
                 val2 = $.isNumeric(val2) ? val2 : val2.toLowerCase();
@@ -330,7 +330,7 @@ var RDataTable = React.createClass({
          * Gets the "end" data as specified by item.key e.g. if item.key = "person.lastName", end data is the lastName.
          * This works for 2 levels only as of Nov 2014 for example "status.path".
          */
-        getEndData: function(rowItem, itemKey) {
+        getVal: function(rowItem, itemKey) {
             var keys = itemKey.split(".");
             if (keys.length > 1) {
                 return rowItem[keys[0]][keys[1]];
@@ -532,7 +532,7 @@ var RDataTableRow = React.createClass({
         var cols = [];
         this.props.colDefinitions.forEach(function(col) {
             if (col.type === undefined && col.isVisible !== false) {
-                cols.push(React.createElement(RDataTableColumn, {data:RDataTable.getEndData(self.props.rowItem,
+                cols.push(React.createElement(RDataTableColumn, {data:RDataTable.getVal(self.props.rowItem,
                                                                                             col.key)}));
             }
         });
