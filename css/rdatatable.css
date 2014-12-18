@@ -32,3 +32,17 @@ span.col-header-sort-icon {
     display: inline-block;
     float: right
 }
+
+td.expand-collapse-control {
+    width: 15px
+}
+
+/* Expanded row container style here */
+
+td.expanded-row-container {
+    background-color: lemonchiffon;
+}
+
+div.expanded-row-container {
+    background-color: lemonchiffon;
+}

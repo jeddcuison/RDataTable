@@ -43,10 +43,16 @@
                           {title:"Units", key:"units"},
                           {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false}];
 
+            var renderExpandedRowContent = function(data) {
+                return React.createElement("div", null, data["str-loc"])
+            };
+
             React.render(React.createElement(RDataTable, {colDefinitions:colDef,
                                                           data:sampleJson,
                                                           // tableIndex:"id", // We need a unique key for the single row highlighting. If not specified, the table will create it's own internal key.
-                                                          selectItemCallback:selectItemHandler}),
+                                                          selectItemCallback:selectItemHandler,
+                                                          enableExpandCollapseRow:true,
+                                                          renderExpandedRowContent:renderExpandedRowContent}),
                                              document.getElementById("table-container"));
 
         });

@@ -60,6 +60,12 @@
  *                 when the table's parent is re-rendered. The reason for that is because the data passed by the
  *                 parent may have changed thus the arbitrary ids assigned by the table will no longer be valid.
  *
+ * 5. enableExpandCollapseRow - if "true" rows are expandable/collapsible. This property is optional. If not set
+ *                              rows will not be expandable/collapsible by default.
+ *
+ * 6. renderExpandedRowContent - callback function that returns an element to be rendered when the row is
+ *                               expanded. e.g. function() {return React.createElement("div", null, "A content...")};
+ *
  */
 var RDataTable = React.createClass({
     getInitialState: function() {
@@ -69,7 +75,8 @@ var RDataTable = React.createClass({
             filterVal: "",
             numberOfRowsToDisplay: "25",
             page: 1,
-            selectedRowIdx: null
+            selectedRowIdx: null,
+            expandedRowMap: {}
         }
     },
     componentWillReceiveProps: function(nextProps) {
@@ -199,6 +206,10 @@ var RDataTable = React.createClass({
         });
 
     },
+    expandCollapseRowCallback: function(theKey) {
+        this.state.expandedRowMap[theKey] = !this.state.expandedRowMap[theKey];
+        this.setState({expandedRowMap:this.state.expandedRowMap});
+    },
     /**
      * Created table rows
      * @param data
@@ -216,12 +227,25 @@ var RDataTable = React.createClass({
 
             var oddEvenClassName = (i % 2 === 0) ? "even" : "odd";
 
+            var isExpanded = self.state.expandedRowMap[RDataTable.columnType.EXPAND_COLLAPSE_CONTROL + item.rowIdx];
+
             rows.push(React.createElement(RDataTableRow, {key:item.rowIdx, /* Please see  http://fb.me/react-warning-keys or http://facebook.github.io/react/docs/multiple-components.html#dynamic-children */
                                                           className:oddEvenClassName,
                                                           rowItem:item,
                                                           colDefinitions:self.props.colDefinitions,
                                                           selectItemCallback:self.selectItemCallback,
-                                                          selectedRowIdx:self.state.selectedRowIdx}));
+                                                          selectedRowIdx:self.state.selectedRowIdx,
+                                                          enableExpandCollapseRow:self.props.enableExpandCollapseRow,
+                                                          expandCollapseCallback:self.expandCollapseRowCallback,
+                                                          isExpanded:isExpanded}));
+
+            if (isExpanded) {
+                rows.push(React.createElement(RDataTableRow,
+                                              {key:"expandedRow" + item.rowIdx, isChildRow:true, colSpan:self.props.colDefinitions.length + 1,
+                                               renderExpandedRowContent:self.props.renderExpandedRowContent,
+                                               rowItem:item}));
+            }
+
         });
         return rows;
     },
@@ -253,7 +277,8 @@ var RDataTable = React.createClass({
                                                                                   colDefinitions:this.props.colDefinitions,
                                                                                   setSortKeyCallback:this.setSortKeyCallback,
                                                                                   sortKey:this.state.sortKey,
-                                                                                  sortOrderMap:this.state.sortOrderMap}),
+                                                                                  sortOrderMap:this.state.sortOrderMap,
+                                                                                  enableExpandCollapseRow:this.props.enableExpandCollapseRow}),
                                         React.createElement("tbody", null, rows)
                                         );
 
@@ -327,6 +352,9 @@ var RDataTable = React.createClass({
         this.setState({selectedRowIdx:item.rowIdx});
     },
     statics: {
+
+        columnType: {EXPAND_COLLAPSE_CONTROL: "expandCollapseControl"},
+
         /**
          * Gets the "end" data as specified by item.key e.g. if item.key = "person.lastName", end data is the lastName.
          * This works for 2 levels only as of Nov 2014 for example "status.path".
@@ -458,6 +486,13 @@ var RDataTableHeaderRow = React.createClass({
     render: function() {
         var headerCols = [];
         var self = this;
+
+        if (this.props.enableExpandCollapseRow) {
+            headerCols.push(React.createElement(RDataTableHeaderColumn,
+                                                {key:RDataTable.columnType.EXPAND_COLLAPSE_CONTROL,
+                                                 type:RDataTable.columnType.EXPAND_COLLAPSE_CONTROL}));
+        }
+
         this.props.colDefinitions.forEach(function(col) {
             if (col.type === undefined && col.isVisible !== false) {
 
@@ -497,6 +532,10 @@ var RDataTableHeaderRow = React.createClass({
  */
 var RDataTableHeaderColumn = React.createClass({
     render: function() {
+        if (this.props.type === RDataTable.columnType.EXPAND_COLLAPSE_CONTROL) {
+            return React.createElement("th", {className:"ui-state-default"});
+        }
+
         if (this.props.sortable === false) {
             return React.createElement("th",
                                        {className:"ui-state-default"},
@@ -534,6 +573,24 @@ var RDataTableRow = React.createClass({
     render: function() {
         var self = this;
         var cols = [];
+
+        if (this.props.isChildRow) {
+            return React.createElement("tr",
+                                       null,
+                                       React.createElement("td",
+                                                           {colSpan:this.props.colSpan, className:"expanded-row-container"},
+                                       React.createElement("div", {className:"expanded-row-container"}, this.props.renderExpandedRowContent(this.props.rowItem))));
+        }
+
+        if (this.props.enableExpandCollapseRow) {
+            var theKey = RDataTable.columnType.EXPAND_COLLAPSE_CONTROL + this.props.rowItem.rowIdx;
+            cols.push(React.createElement(RDataTableColumn,
+                                          {key:theKey,
+                                           type:RDataTable.columnType.EXPAND_COLLAPSE_CONTROL,
+                                           expandCollapseCallback: this.expandCollapseCallback.bind(this, theKey),
+                                           isExpanded:this.props.isExpanded}));
+        }
+
         this.props.colDefinitions.forEach(function(col) {
             if (col.type === undefined && col.isVisible !== false) {
                 cols.push(React.createElement(RDataTableColumn, {key:col.key + self.props.rowItem.rowIdx,
@@ -557,6 +614,9 @@ var RDataTableRow = React.createClass({
     },
     handleOnClick: function() {
         this.props.selectItemCallback(this.props.rowItem);
+    },
+    expandCollapseCallback: function(theKey) {
+        this.props.expandCollapseCallback(theKey);
     }
 });
 
@@ -569,6 +629,15 @@ var RDataTableRow = React.createClass({
  */
 var RDataTableColumn = React.createClass({
     render: function() {
+        if (this.props.type === RDataTable.columnType.EXPAND_COLLAPSE_CONTROL) {
+            var expandCollapseClassName = this.props.isExpanded ? "ui-icon-triangle-1-s" : "ui-icon-triangle-1-e";
+            return React.createElement("td",
+                                       {ref:"theRow", className:"expand-collapse-control", onClick:this.onClickHandler},
+                                       React.createElement("span", {className:"ui-icon " + expandCollapseClassName}));
+        }
         return React.createElement("td", null, this.props.data);
+    },
+    onClickHandler: function() {
+        this.props.expandCollapseCallback();
     }
 });
