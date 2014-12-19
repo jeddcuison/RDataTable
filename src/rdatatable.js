@@ -574,9 +574,11 @@ var RDataTableRow = React.createClass({
         var self = this;
         var cols = [];
 
+        var style = this.props.rowItem.isVisible ? {} : {display:"none"};
+
         if (this.props.isChildRow) {
             return React.createElement("tr",
-                                       null,
+                                       {style:style},
                                        React.createElement("td",
                                                            {colSpan:this.props.colSpan, className:"expanded-row-container"},
                                        React.createElement("div", {className:"expanded-row-container"}, this.props.renderExpandedRowContent(this.props.rowItem))));
@@ -598,7 +600,6 @@ var RDataTableRow = React.createClass({
             }
         });
 
-        var style = this.props.rowItem.isVisible ? {} : {display:"none"};
         var rowSelectedClass = "";
         if (this.props.rowItem.isVisible) {
             if (this.props.selectedRowIdx !== null && this.props.selectedRowIdx === this.props.rowItem.rowIdx) {
