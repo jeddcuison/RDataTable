@@ -19,23 +19,28 @@ describe("RDataTable test suite", function() {
         }).length;
     };
 
-    beforeEach(function() {
-        // Always start with a clean slate to avoid testing on stale data
-        dataTable =  React.createElement(RDataTable, {colDefinitions:colDef, data:testJsonData});
+    var createDataTable = function(enableExpandCollapseRow, renderExpandedRowContentCallback) {
+        dataTable =  React.createElement(RDataTable, {colDefinitions:colDef,
+                                                      data:testJsonData,
+                                                      enableExpandCollapseRow:enableExpandCollapseRow,
+                                                      renderExpandedRowContent:renderExpandedRowContentCallback});
         dtInstance = testUtils.renderIntoDocument(dataTable);
-    });
+    };
 
     it("Can initialize component", function() {
+        createDataTable();
         expect(dataTable.props.colDefinitions.length).toBe(8);
     });
 
     it("Can return no rows when filter value is not found in the data", function() {
+        createDataTable();
         expect(getNonVisibleRowCount(dtInstance.refs.table.getDOMNode())).toBe(0);
         testUtils.Simulate.change(dtInstance.refs.tableHeader.refs.filterTextBox.getDOMNode(), {target: {value: "xxxxxxxxx"}});
         expect(getNonVisibleRowCount(dtInstance.refs.table.getDOMNode())).toBe(25);
     });
 
     it("Can filter a specific row", function() {
+        createDataTable();
         expect(getNonVisibleRowCount(dtInstance.refs.table.getDOMNode())).toBe(0);
         testUtils.Simulate.change(dtInstance.refs.tableHeader.refs.filterTextBox.getDOMNode(), {target: {value: "5565-71 W. Quincy Ave."}});
         expect(getNonVisibleRowCount(dtInstance.refs.table.getDOMNode())).toBe(24);
@@ -43,6 +48,7 @@ describe("RDataTable test suite", function() {
     });
 
     it("Can go to next and previous pages", function() {
+        createDataTable();
         dtInstance.setState({numberOfRowsToDisplay: 5});
         expect(getNonVisibleRowCount(dtInstance.refs.table.getDOMNode())).toBe(20);
 
@@ -75,6 +81,8 @@ describe("RDataTable test suite", function() {
     });
 
     it("Can sort a column", function() {
+        createDataTable();
+
         var getColVal = function(row) {
             return $($(row).find("td")[6]).html();
         };
@@ -95,6 +103,30 @@ describe("RDataTable test suite", function() {
         for (var i = 0; i < rows.length; i++) {
             expect(getColVal(rows[i])).toBe(sortedTestDataCompanyName[i]);
         }
+    });
+
+    var renderExpandedRowContentCallback = function(data) {
+        return React.createElement("div", null, data.areaName);
+    };
+
+    it("Can expand a row", function() {
+        createDataTable(true, renderExpandedRowContentCallback);
+        expect(dtInstance.refs.expandedRow2).toBeUndefined();
+        testUtils.Simulate.click(dtInstance.refs.row2.refs.expandCollapseControl.refs.expandCollapseIcon.getDOMNode());
+        expect(dtInstance.refs.expandedRow2).toBeDefined();
+    });
+
+    it("Can collapse a row", function() {
+        createDataTable(true, renderExpandedRowContentCallback);
+        expect(dtInstance.refs.expandedRow2).toBeUndefined();
+
+        // expand and check
+        testUtils.Simulate.click(dtInstance.refs.row2.refs.expandCollapseControl.refs.expandCollapseIcon.getDOMNode());
+        expect(dtInstance.refs.expandedRow2).toBeDefined();
+
+        // collapse and check
+        testUtils.Simulate.click(dtInstance.refs.row2.refs.expandCollapseControl.refs.expandCollapseIcon.getDOMNode());
+        expect(dtInstance.refs.expandedRow2).toBeUndefined();
     });
 
 });
