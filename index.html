@@ -10,6 +10,7 @@
     <script src="lib/es5/es5-sham-4.0.5.min.js"></script>
     <script src="lib/react-0.12.1/react.js"></script>
     <script src="src/data.js"></script>
+    <script src="src/pic-gallery.js"></script>
     <script src="src/rdatatable.js"></script>
     <script type="text/javascript">
         /** @jsx React.DOM */
@@ -41,10 +42,12 @@
                           {title:"Phone Number", key:"phone"},
                           {title:"Management Company", key:"mgmtCompany"},
                           {title:"Units", key:"units"},
-                          {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false}];
+                          {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false},
+                          {key:"lat", isVisible:false},
+                          {key:"lon", isVisible:false}];
 
             var renderExpandedRowContent = function(data) {
-                return React.createElement("div", null, data["str-loc"])
+                return React.createElement(PicGallery, {title:"Street view of the area...", lat:data.lat, lon:data.lon});
             };
 
             React.render(React.createElement(RDataTable, {colDefinitions:colDef,
