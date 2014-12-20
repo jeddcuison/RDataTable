@@ -7,6 +7,7 @@ Please note that RDataTable is not an "Official" Data Table component of Faceboo
 #####Screen Shot
 
 ![alt tag](http://i107.photobucket.com/albums/m295/jeddcuison/rdatatable-sample-screen-shot_zps2072db80.png)
+![alt tag](http://i107.photobucket.com/albums/m295/jeddcuison/data-table-2_zps77510dec.jpg)
 
 [RDataTable Working Demo]
 
@@ -48,12 +49,10 @@ Readmes, how to use them in your own application can be found here:
 ### Development
 
  - On-going...
- - Want to contribute ? (Review of open sourcing procedures still in the backlog)
 
 ### Todos
 
- - Write Tests
- - Add expand/collapse row(s) feature
+ - Make test more robust
  - Review and Refactor
 
 License
