@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables_themeroller.css">
+    <link rel="stylesheet" type="text/css" href="css/rdatatable.css">
+    <script src="lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="lib/es5/es5-shim-4.0.5.min.js"></script>
+    <script src="lib/es5/es5-sham-4.0.5.min.js"></script>
+    <script src="lib/react-0.12.1/react.js"></script>
+    <script src="lib/react-0.12.1/JSXTransformer.js"></script>
+    <script src="src/data.js"></script>
+    <script src="src/pic-gallery.js"></script>
+    <script src="src/rdatatable.js"></script>
+    <script type="text/jsx">
+        $(document).ready(function() {
+
+            var selectItemHandler = function(o) {
+                // Row selection handler here
+            };
+
+            /**
+             * This is a way to customize column display.
+             * In this example, we want to strip away the
+             * address leaving only the latitude and longitude
+             * information, then we want it to be a link
+             * to Google Map.
+             */
+            var locationRenderCallback = function(data) {
+                var loc = data.substring(data.indexOf('(')); // strip the address
+                loc = loc.substr(1, loc.length - 2);         // strip '(' and ')'
+                var mapLink = "http://maps.google.com/maps?q=" + loc;
+                return React.DOM.a({href:mapLink, target:"_blank"}, "map");
+            };
+
+            var colDef = [{title:"Area Name", key:"areaName"},
+                          {title:"Property Type", key:"propertyType"},
+                          {title:"Property Name", key:"propertyName"},
+                          {title:"Address", key:"addr"},
+                          {title:"Zip Code", key:"zip"},
+                          {title:"Phone Number", key:"phone"},
+                          {title:"Management Company", key:"mgmtCompany"},
+                          {title:"Units", key:"units"},
+                          {title:"Location", key:"loc", renderCallback:locationRenderCallback, sortable:false},
+                          {key:"lat", isVisible:false},
+                          {key:"lon", isVisible:false}];
+
+            var renderExpandedRowContent = function(data) {
+                return <PicGallery title="Street view of the area..." 
+                                   lat={data.lat} 
+                                   lon={data.lon}/>;
+            };
+
+            React.render(<RDataTable colDefinitions={colDef} 
+                                     data={sampleJson}
+                                     selectItemCallback={selectItemHandler}
+                                     enableExpandCollapseRow={true}
+                                     renderExpandedRowContent={renderExpandedRowContent}/>,
+                         document.getElementById("table-container"));
+        });
+    </script>
+
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div class="header-container">
+        <h1>Chicago City Affordable Rental Housing Development Data</h1>
+        <p><a href="https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi">For the actual data source please click...</a></p>
+    </div>
+    <div id="table-container" class="table-container"></div>
+</body>
+</html>
