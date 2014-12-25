@@ -27,6 +27,7 @@ RDataTable uses a number of open source projects to work properly:
 
  - [City of Chicago Data Portal] - For sample data (Affordable Rental Housing Developments)
  - [Google Maps] - To show the map of locations found in the sample data
+ - Special thanks to Steven Ger and Corey Gantzhorn
 
 ### Installation
 
