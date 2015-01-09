@@ -21,7 +21,7 @@ RDataTable uses a number of open source projects to work properly:
  - [Facebook React]
  - [jQuery]
  - [jQuery UI Themeroller]
- - [jQuery DataTables]
+ - [jQuery DataTables (Stylesheet)]
 
 ### Acknowledgement
 
@@ -65,7 +65,7 @@ MIT
 
 [jQuery]:http://jquery.com/
 [Facebook React]:http://facebook.github.io/react/
-[jQuery DataTables]:http://www.datatables.net/
+[jQuery DataTables (Stylesheet)]:http://www.datatables.net/
 [jQuery UI Themeroller]:http://jqueryui.com/themeroller/
 [Google Maps]:https://www.google.com/maps
 [City of Chicago Data Portal]:https://data.cityofchicago.org/
