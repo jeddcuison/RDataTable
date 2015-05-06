@@ -242,8 +242,8 @@ var RDataTable = React.createClass({
 
             if (isExpanded) {
                 rows.push(React.createElement(RDataTableRow,
-                                              {key:RDataTable.const.EXPANDED_ROW + item.rowIdx,
-                                               ref:RDataTable.const.EXPANDED_ROW + item.rowIdx,
+                                              {key:RDataTable.EXPANDED_ROW + item.rowIdx,
+                                               ref:RDataTable.EXPANDED_ROW + item.rowIdx,
                                                isChildRow:true,
                                                colSpan:self.props.colDefinitions.length + 1,
                                                renderExpandedRowContent:self.props.renderExpandedRowContent,
@@ -360,7 +360,7 @@ var RDataTable = React.createClass({
     },
     statics: {
 
-        const: {EXPANDED_ROW: "expandedRow"},
+        EXPANDED_ROW: "expandedRow",
         columnType: {EXPAND_COLLAPSE_CONTROL: "expandCollapseControl"},
 
         /**
