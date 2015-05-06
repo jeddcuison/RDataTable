@@ -259,6 +259,7 @@ var RDataTable = React.createClass({
         var data = (this.props.data === null || this.props.data === undefined) ? [] : this.props.data;
 
         var table;
+        var filteredDataRowCount = 0;
         if (data.length > 0) {
 
             // Step 1: Data transformation
@@ -283,13 +284,13 @@ var RDataTable = React.createClass({
                                         React.createElement("tbody", null, rows)
                                         );
 
-
+            filteredDataRowCount = formattedData.filterRowCount; 
         } else {
             table = React.createElement("div", {ref:"table", className:"noDataFoundMsg"}, "The table is empty!");
         }
 
-        var maxPage = (self.state.numberOfRowsToDisplay === "ALL" || formattedData.filterRowCount === 0) ?
-                                  1 : Math.ceil(formattedData.filterRowCount/Number(self.state.numberOfRowsToDisplay));
+        var maxPage = (self.state.numberOfRowsToDisplay === "ALL" || filteredDataRowCount === 0) ?
+                                  1 : Math.ceil(filteredDataRowCount/Number(self.state.numberOfRowsToDisplay));
 
         return React.createElement("div", {className:"dataTables_wrapper"},
                                    React.createElement(RDataTableHeader, {ref:"tableHeader",
@@ -299,7 +300,7 @@ var RDataTable = React.createClass({
                                    table,
                                    React.createElement(RDataTableFooter, {ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
                                                                           rowCount:data.length,
-                                                                          filterRowCount: formattedData.filterRowCount,
+                                                                          filterRowCount: filteredDataRowCount,
                                                                           prevPageCallback:this.prevPageCallback,
                                                                           nextPageCallback:this.nextPageCallback,
                                                                           currentPage:this.state.page,
