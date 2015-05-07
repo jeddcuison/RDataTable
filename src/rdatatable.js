@@ -35,6 +35,10 @@
  *                  {title:"Management Company", key:"mgmtCompany"},
  *                  {title:"Units", key:"units"},
  *                  {title:"Location", key:"loc", renderCallback:locationRenderCallback}]
+ * 
+ *    NOTE!!! The key is always required. In the case where renderCallback is specified, the key need not have a
+ *            match in the data property meaning that it can be arbitrary but should be unique for the row or the
+ *            for colDef array property.
  *
  * 2. data - the data to display in the table.
  *
