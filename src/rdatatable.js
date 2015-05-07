@@ -65,15 +65,20 @@
  *
  * 6. renderExpandedRowContent - callback function that returns an element to be rendered when the row is
  *                               expanded. e.g. function() {return React.createElement("div", null, "A content...")};
+ * 
+ * 7. showTableHeader - Hides the table header if set to false. The header is shown by default if not set.
+ *
+ * 8. showTableFooter - Hides the table footer if set to false. The footer is shown by default if not set.
  *
  */
 var RDataTable = React.createClass({
     getInitialState: function() {
+        var numberOfRowsToDisplay = this.props.showTableFooter === false ? "ALL" : "25";
         return {
             sortOrderMap: null,
             sortKey: null,
             filterVal: "",
-            numberOfRowsToDisplay: "25",
+            numberOfRowsToDisplay: numberOfRowsToDisplay,
             page: 1,
             selectedRowIdx: null,
             expandedRowMap: {}
@@ -289,24 +294,29 @@ var RDataTable = React.createClass({
             table = React.createElement("div", {ref:"table", className:"noDataFoundMsg"}, "The table is empty!");
         }
 
-        var maxPage = (self.state.numberOfRowsToDisplay === "ALL" || filteredDataRowCount === 0) ?
-                                  1 : Math.ceil(filteredDataRowCount/Number(self.state.numberOfRowsToDisplay));
+        var tableHeader = null;
+        var tableFooter = null;
 
-        return React.createElement("div", {className:"dataTables_wrapper"},
-                                   React.createElement(RDataTableHeader, {ref:"tableHeader",
-                                                                          filterCallback:this.filterCallback,
-                                                                          numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
-                                                                          selectNumberOfRowsToDisplayCallback:this.selectNumberOfRowsToDisplayCallback}),
-                                   table,
-                                   React.createElement(RDataTableFooter, {ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
-                                                                          rowCount:data.length,
-                                                                          filterRowCount: filteredDataRowCount,
-                                                                          prevPageCallback:this.prevPageCallback,
-                                                                          nextPageCallback:this.nextPageCallback,
-                                                                          currentPage:this.state.page,
-                                                                          maxPage:maxPage})
-               );
+        if (this.props.showTableHeader !== false) {
+            tableHeader = React.createElement(RDataTableHeader, {ref:"tableHeader",
+                                                                 filterCallback:this.filterCallback,
+                                                                 numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
+                                                                 selectNumberOfRowsToDisplayCallback:this.selectNumberOfRowsToDisplayCallback});
+        }
 
+        if (this.props.showTableFooter !== false) {
+            var maxPage = (self.state.numberOfRowsToDisplay === "ALL" || filteredDataRowCount === 0) ?
+                                              1 : Math.ceil(filteredDataRowCount/Number(self.state.numberOfRowsToDisplay));
+            tableFooter = React.createElement(RDataTableFooter, {ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
+                                                                                    rowCount:data.length,
+                                                                                    filterRowCount: filteredDataRowCount,
+                                                                                    prevPageCallback:this.prevPageCallback,
+                                                                                    nextPageCallback:this.nextPageCallback,
+                                                                                    currentPage:this.state.page,
+                                                                                    maxPage:maxPage});
+        }
+
+        return React.createElement("div", {className:"dataTables_wrapper"}, tableHeader, table, tableFooter);
     },
     /**
      * Converts a value to it's object equivalent as defined by it's key.
