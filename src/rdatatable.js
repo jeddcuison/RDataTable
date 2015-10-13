@@ -35,7 +35,7 @@
  *                  {title:"Management Company", key:"mgmtCompany"},
  *                  {title:"Units", key:"units"},
  *                  {title:"Location", key:"loc", renderCallback:locationRenderCallback}]
- * 
+ *
  *    NOTE!!! The key is always required. In the case where renderCallback is specified, the key need not have a
  *            match in the data property meaning that it can be arbitrary but should be unique for the row or the
  *            for colDef array property.
@@ -69,7 +69,7 @@
  *
  * 6. renderExpandedRowContent - callback function that returns an element to be rendered when the row is
  *                               expanded. e.g. function() {return React.createElement("div", null, "A content...")};
- * 
+ *
  * 7. showTableHeader - Hides the table header if set to false. The header is shown by default if not set.
  *
  * 8. showTableFooter - Hides the table footer if set to false. The footer is shown by default if not set.
@@ -85,7 +85,8 @@ var RDataTable = React.createClass({
             numberOfRowsToDisplay: numberOfRowsToDisplay,
             page: 1,
             selectedRowIdx: null,
-            expandedRowMap: {}
+            expandedRowMap: {},
+            data: (this.props.data === null || this.props.data === undefined) ? [] : this.props.data
         }
     },
     componentWillReceiveProps: function(nextProps) {
@@ -264,15 +265,12 @@ var RDataTable = React.createClass({
     },
     render: function() {
         var self = this;
-
-        var data = (this.props.data === null || this.props.data === undefined) ? [] : this.props.data;
-
         var table;
         var filteredDataRowCount = 0;
-        if (data.length > 0) {
+        if (this.state.data.length > 0) {
 
             // Step 1: Data transformation
-            var formattedData = this.transformAndFilterData(data);
+            var formattedData = this.transformAndFilterData(this.state.data);
 
             // Step 2: Sorting.
             this.sort(formattedData.data);
@@ -293,7 +291,7 @@ var RDataTable = React.createClass({
                                         React.createElement("tbody", null, rows)
                                         );
 
-            filteredDataRowCount = formattedData.filterRowCount; 
+            filteredDataRowCount = formattedData.filterRowCount;
         } else {
             table = React.createElement("div", {ref:"table", className:"noDataFoundMsg"}, "The table is empty!");
         }
@@ -312,7 +310,7 @@ var RDataTable = React.createClass({
             var maxPage = (self.state.numberOfRowsToDisplay === "ALL" || filteredDataRowCount === 0) ?
                                               1 : Math.ceil(filteredDataRowCount/Number(self.state.numberOfRowsToDisplay));
             tableFooter = React.createElement(RDataTableFooter, {ref:"tableFooter", numberOfRowsToDisplay:this.state.numberOfRowsToDisplay,
-                                                                                    rowCount:data.length,
+                                                                                    rowCount:this.state.data.length,
                                                                                     filterRowCount: filteredDataRowCount,
                                                                                     prevPageCallback:this.prevPageCallback,
                                                                                     nextPageCallback:this.nextPageCallback,
@@ -372,6 +370,23 @@ var RDataTable = React.createClass({
         }
         this.setState({selectedRowIdx:item.rowIdx});
     },
+
+    /**
+     * Find first occurrence of a val of a certain field.
+     * If the value was found the row where the data has been found will be highlighted.
+     * The current page will also be set to the page where the value has been found.
+     */
+    selectRow: function(key) {
+        this.setState({selectedRowIdx: key});
+    },
+
+    /**
+     * Reloads data and updates the datable..
+     */
+    refresh: function(data) {
+        this.setState({data:data});
+    },
+
     statics: {
 
         EXPANDED_ROW: "expandedRow",
@@ -566,11 +581,11 @@ var RDataTableHeaderColumn = React.createClass({
                                                             this.props.title));
         }
         return React.createElement("th",
-                                   {ref:"colHead", className:"sorting ui-state-default", onClick:this.sort},
+                                   {ref:"colHead", className:"ui-state-default", onClick:this.sort},
                                    React.createElement("div",
                                                        {className:""},
                                                        React.createElement("span",
-                                                                           {className:"col-header-title"},
+                                                                           {className:""},
                                                                            this.props.title),
                                                        React.createElement("span",
                                                                            {className:"DataTables_sort_icon css_right ui-icon ui-icon-carat-2-n-s col-header-sort-icon " + this.props.sortIconClass})
