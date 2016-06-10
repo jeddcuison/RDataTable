@@ -96,6 +96,10 @@ var RDataTable = React.createClass({
                 nextProps.selectItemCallback(null);
             }
         }
+        
+        if (this.props.data !== nextProps.data) {
+            this.setState({data: nextProps.data});
+        }
     },
     /**
      * Performs data transformation and filtering.
